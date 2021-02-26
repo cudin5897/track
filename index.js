@@ -1,40 +1,27 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const logger = require("morgan");
-const path = require("path");
-const app = express();
+const express = require('express')
 
-const PORT = process.env.PORT || 3000;
-const NODE_ENV = process.env.NODE_ENV || "development";
+const app = express()
 
-app.set("port", PORT);
-app.set("env", NODE_ENV);
+const port = 3000
 
-app.use(logger("tiny"));
-app.use(bodyParser.json());
+const unirest = require("unirest");
 
-app.use("/", require(path.join(__dirname, "routes/stats")));
 
-app.use((req, res, next) => {
-    const err = new Error(`${req.method} ${req.url} Not Found`);
-    err.status = 404;
-    next(err);
-});
-
-app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(err.status || 500);
-    res.json({
-        error: {
-            message: err.message,
-        },
-    });
-});
-
-app.listen(PORT, () => {
-    console.log(
-        `Express Server started on Port ${app.get(
-            "port"
-        )} | Environment : ${app.get("env")}`
+app.get('/', (req, res) => {
+    const apiCall = unirest(
+        "GET",
+        "https://ip-geolocation-ipwhois-io.p.rapidapi.com/json/"
     );
-});
+
+    apiCall.headers({
+        "x-rapidapi-host": "ip-geolocation-ipwhois-io.p.rapidapi.com",
+        "x-rapidapi-key": "ba00575e52msha07fd0c94b6f030p14c4f1jsn1b741c25cf74"
+    });
+
+    apiCall.end(function (result) {
+        if (res.error) throw new Error(result.error);
+        console.log(result.body);
+        res.send(result.body);
+    });
+})
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
