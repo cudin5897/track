@@ -1,14 +1,15 @@
-var express = require('express'); 
-var app = express();  
-var PORT = 3000; 
-  
-app.enable('trust proxy') 
-app.get('/', function (req, res) { 
-  console.log(req.ip); 
-  res.send(); 
-}); 
-  
-app.listen(PORT, function(err){ 
-    if (err) console.log(err); 
-    console.log("Server listening on PORT", PORT); 
-});
+const express = require('express')
+
+const app = express()
+
+const port = 3000
+
+
+
+
+app.get('/', (req, res) => res.send('Testing my Geolocation Node app!'))
+
+
+
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
